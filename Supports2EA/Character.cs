@@ -4,15 +4,17 @@ namespace Supports2EA
 {
     public class Character
     {
-        byte index;
-        byte[] supportPartners = new byte[6];
-        byte[] initialValues = new byte[6];
-        byte[] growthRates = new byte[6];
-        byte numPartners = 0;
+        public string name;
+        public byte index;
+        public string[] supportPartners = new string[6];
+        public byte[] initialValues = new byte[6];
+        public byte[] growthRates = new byte[6];
+        public byte numPartners = 0;
         
-        public void init(byte id) 
+        public void init(string n, byte id) 
         {
             this.index = id;
+            this.name = n;
         }
 
     }
