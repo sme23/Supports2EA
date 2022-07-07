@@ -8,11 +8,11 @@ when setting up support data.
 ## Usage
 
 ```
-supports2ea "input.txt" ["characters.txt"]
+supports2ea "input.txt" "characters.txt"
 ```
 
 `input.txt` contains the input supports script.
-You can optionally supply `characters.txt` to have character-relevant data automatically enumerated in the output file. 
+`characters.txt` contains character-relevant data automatically enumerated in the output file. 
 
 The format of each line of a support script is as follows:
 
