@@ -77,9 +77,10 @@ namespace Supports2EA
                 string trimmedLine = line.Trim();
                 if (trimmedLine.StartsWith("#define"))
                 {
-                    trimmedLine = line.Substring(7);
+                    trimmedLine = line.Substring(8);
                     trimmedLine = trimmedLine.TrimStart();
                     string key = trimmedLine.Substring(0, trimmedLine.IndexOf(' '));
+                    trimmedLine = trimmedLine.Substring(trimmedLine.IndexOf(' '));
                     trimmedLine = trimmedLine.TrimStart();
                     byte index = Convert.ToByte(Convert.ToInt32(trimmedLine));
                     Character newChar = new Character();
@@ -94,33 +95,35 @@ namespace Supports2EA
         {
             foreach (string line in System.IO.File.ReadLines(filepath))
             {
-                string trimmedLine = line.Trim();
-                trimmedLine = line.Replace(" ", "");
+                
+                if (line != "") { 
+                    string trimmedLine = line.Trim();
+                    trimmedLine = line.Replace(" ", "");
 
-                string char1 = trimmedLine.Substring(0, trimmedLine.IndexOf('+') - 1);
-                trimmedLine = trimmedLine.Substring(trimmedLine.IndexOf('+') + 1);
-                string char2 = trimmedLine.Substring(0, trimmedLine.IndexOf('{') - 1);
-                trimmedLine = trimmedLine.Substring(trimmedLine.IndexOf('{') + 1);
-                byte startValue = Convert.ToByte(trimmedLine.Substring(0, trimmedLine.IndexOf(',') - 1));
-                trimmedLine = trimmedLine.Substring(trimmedLine.IndexOf(',') + 1);
-                byte growthValue = Convert.ToByte(trimmedLine.Substring(0, trimmedLine.IndexOf('}') - 1));
+                    string char1 = trimmedLine.Substring(0, trimmedLine.IndexOf('+'));
+                    trimmedLine = trimmedLine.Substring(trimmedLine.IndexOf('+') + 1);
+                    string char2 = trimmedLine.Substring(0, trimmedLine.IndexOf('{'));
+                    trimmedLine = trimmedLine.Substring(trimmedLine.IndexOf('{') + 1);
+                    byte startValue = Convert.ToByte(trimmedLine.Substring(0, trimmedLine.IndexOf(',')));
+                    trimmedLine = trimmedLine.Substring(trimmedLine.IndexOf(',') + 1);
+                    byte growthValue = Convert.ToByte(trimmedLine.Substring(0, trimmedLine.IndexOf('}')));
 
-                Character partner1;
-                Character partner2;
-                dict.TryGetValue(char1, out partner1);
-                dict.TryGetValue(char2, out partner2);
+                    Character partner1;
+                    Character partner2;
+                    dict.TryGetValue(char1, out partner1);
+                    dict.TryGetValue(char2, out partner2);
 
-                //insert values at next free index for each
-                partner1.supportPartners[partner1.numPartners] = char2;
-                partner1.initialValues[partner1.numPartners] = startValue;
-                partner1.growthRates[partner1.numPartners] = growthValue;
-                partner1.numPartners++;
+                    //insert values at next free index for each
+                    partner1.supportPartners[partner1.numPartners] = char2.Trim();
+                    partner1.initialValues[partner1.numPartners] = startValue;
+                    partner1.growthRates[partner1.numPartners] = growthValue;
+                    partner1.numPartners++;
 
-                partner2.supportPartners[partner2.numPartners] = char1;
-                partner2.initialValues[partner2.numPartners] = startValue;
-                partner2.growthRates[partner2.numPartners] = growthValue;
-                partner2.numPartners++;
-
+                    partner2.supportPartners[partner2.numPartners] = char1.Trim();
+                    partner2.initialValues[partner2.numPartners] = startValue;
+                    partner2.growthRates[partner2.numPartners] = growthValue;
+                    partner2.numPartners++;
+                }
             }
         }
 
@@ -135,21 +138,29 @@ namespace Supports2EA
                 ""
             };
 
-            string[] output1 = new string[] { };
-            int i = 0;
+            List<string> output1 = new List<string>();
 
             //for each entry in dict, write output data
             foreach (KeyValuePair<string, Character> unit in dict)
             {
-                output1[i] = (unit.Value.name + "SupportData:");
-                output1[i + 1] = ("SupportData(" +
-                                    unit.Value.supportPartners[0].ToString() + "," +
-                                    unit.Value.supportPartners[1].ToString() + "," +
-                                    unit.Value.supportPartners[2].ToString() + "," +
-                                    unit.Value.supportPartners[3].ToString() + "," +
-                                    unit.Value.supportPartners[4].ToString() + "," +
-                                    unit.Value.supportPartners[5].ToString() + "," +
-                                    unit.Value.supportPartners[6].ToString() + "," +
+
+                string i = unit.Value.supportPartners[0].ToString();
+                i = i + " ";
+                output1.Add(i);
+                output1.Add(unit.Value.name + "SupportData:");
+                
+                //string splitTestString = "SupportData(";
+                //splitTestString += unit.Value.numPartners.ToString();
+                //output1.Add(splitTestString);
+                
+                output1.Add("SupportData(" +
+                                    unit.Value.supportPartners[0] + "," +
+                                    unit.Value.supportPartners[1] + "," +
+                                    unit.Value.supportPartners[2] + "," +
+                                    unit.Value.supportPartners[3] + "," +
+                                    unit.Value.supportPartners[4] + "," +
+                                    unit.Value.supportPartners[5] + "," +
+                                    unit.Value.supportPartners[6] + "," +
                                     unit.Value.initialValues[0].ToString() + "," +
                                     unit.Value.initialValues[1].ToString() + "," +
                                     unit.Value.initialValues[2].ToString() + "," +
@@ -166,7 +177,7 @@ namespace Supports2EA
                                     unit.Value.growthRates[6].ToString() + "," +
                                     unit.Value.numPartners.ToString() + ")"
                 );
-                i = i + 2;
+            
             }
 
             string[] secondHeader =
@@ -184,8 +195,7 @@ namespace Supports2EA
                 ""
             };
 
-            string[] output2 = new string[] { }; 
-            int j = 0;
+            List<string> output2 = new List<string>(); 
             List<CharacterPairs> pairs = new List<CharacterPairs>();
 
             foreach (KeyValuePair<string, Character> unit in dict)
@@ -193,14 +203,13 @@ namespace Supports2EA
                 for (int k = 0; k < 7; k++) {
                     if (!((pairs.Contains(new CharacterPairs(unit.Value.name, unit.Value.supportPartners[k]))) || (pairs.Contains(new CharacterPairs(unit.Value.supportPartners[k], unit.Value.name)))))
                     {
-                        output2[j] = ("SupportText(" +
+                        output2.Add("SupportText(" +
                                 unit.Value.name + "," +
                                 unit.Value.supportPartners[k] + "," +
                                 unit.Value.name + unit.Value.supportPartners[k] + "CSupport," +
                                 unit.Value.name + unit.Value.supportPartners[k] + "BSupport," +
                                 unit.Value.name + unit.Value.supportPartners[k] + "ASupport)");
                         pairs.Add(new CharacterPairs(unit.Value.name, unit.Value.supportPartners[k]));
-                        j++;
                     }
                 }
             }
