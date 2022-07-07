@@ -6,7 +6,7 @@ namespace Supports2EA
 {
     public class Program
     {
-        private Dictionary<string, Character> characters;
+        private static Dictionary<string, Character> characters = new Dictionary<string, Character>();
         private static string[] helpStringArr =
         {
             "Supports2EA. Usage:",
@@ -21,7 +21,7 @@ namespace Supports2EA
         private static readonly string helpString = System.Linq.Enumerable.Aggregate(helpStringArr,
             (string a, string b) => { return a + '\n' + b; });
 
-        public int Main(string[] args)
+        public static int Main(string[] args)
         {
 
             if (args.Length == 0)
@@ -45,14 +45,14 @@ namespace Supports2EA
             string ofile = ifile;
 
             //strip down ifile into ofile directory, then append ofile filename
-            if (ofile.Contains('/')) { ofile = ofile.Substring(0, ofile.LastIndexOf('/') + 1); }
-            else if (ofile.Contains('\\')) { ofile = ofile.Substring(0, ofile.LastIndexOf('\\') + 1); }
+            if (ofile.Contains("/")) { ofile = ofile.Substring(0, ofile.LastIndexOf('/') + 1); }
+            else if (ofile.Contains("\\")) { ofile = ofile.Substring(0, ofile.LastIndexOf('\\') + 1); }
             else { ofile = ""; }
 
             ofile = String.Concat(ofile, "SupportsInstaller.event");
 
             //enumerate characters into character objects
-            enumerateCharacters(characters, cfile);
+            enumerateCharacters(Program.characters, cfile);
 
             //parse input script
             parseScript(characters, ifile);
@@ -65,7 +65,7 @@ namespace Supports2EA
             return 0;
         }
 
-        private void enumerateCharacters(Dictionary<string, Character> dict, string filepath)
+        private static void enumerateCharacters(Dictionary<string, Character> dict, string filepath)
         {
 
             //parse the character input file
@@ -90,7 +90,7 @@ namespace Supports2EA
 
         }
 
-        private void parseScript(Dictionary<string, Character> dict, string filepath)
+        private static void parseScript(Dictionary<string, Character> dict, string filepath)
         {
             foreach (string line in System.IO.File.ReadLines(filepath))
             {
@@ -124,7 +124,7 @@ namespace Supports2EA
             }
         }
 
-        private void outputFile(Dictionary<string, Character> dict, string filepath)
+        private static void outputFile(Dictionary<string, Character> dict, string filepath)
         {
 
             string[] header = {
