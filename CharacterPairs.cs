@@ -1,7 +1,9 @@
 ﻿
+using System;
+
 namespace Supports2EA { 
 
-	public class CharacterPairs
+	public class CharacterPairs: Object
 	{
 
 		public string char1;
@@ -10,6 +12,15 @@ namespace Supports2EA {
 		{
 			char1 = c1;
 			char2 = c2;
+		}
+
+		public override bool Equals(Object obj)
+		{
+			CharacterPairs that = obj as CharacterPairs;
+			bool retVal = false;
+			
+			if (this != null &&  that != null) retVal = (this.char1 == that.char1 && this.char2 == that.char2);			
+			return retVal;
 		}
 	}
 }
