@@ -202,8 +202,7 @@ namespace Supports2EA
                 for (int k = 0; k < 7; k++) {
 
                     if (
-                        (pairs.Contains(new CharacterPairs(unit.Value.supportPartners[k], unit.Value.name)))
-                        || (unit.Value.supportPartners[k] != "0")
+                        (unit.Value.supportPartners[k] != "0") && (!pairs.Contains(new CharacterPairs(unit.Value.supportPartners[k], unit.Value.name)))                       
                        )
                     {
                         output2.Add("SupportText(" +
