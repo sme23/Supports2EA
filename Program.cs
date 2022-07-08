@@ -200,10 +200,11 @@ namespace Supports2EA
             foreach (KeyValuePair<string, Character> unit in dict)
             {
                 for (int k = 0; k < 7; k++) {
-                    if (   (!pairs.Contains(new CharacterPairs(unit.Value.name, unit.Value.supportPartners[k]))) 
-                        || (!pairs.Contains(new CharacterPairs(unit.Value.supportPartners[k], unit.Value.name))) 
-                        ||  unit.Value.supportPartners[k] != "0"
-                        )
+
+                    if (
+                        (pairs.Contains(new CharacterPairs(unit.Value.supportPartners[k], unit.Value.name)))
+                        || (unit.Value.supportPartners[k] != "0")
+                       )
                     {
                         output2.Add("SupportText(" +
                                 unit.Value.name + "," +
