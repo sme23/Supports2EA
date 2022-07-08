@@ -144,15 +144,14 @@ namespace Supports2EA
             foreach (KeyValuePair<string, Character> unit in dict)
             {
 
-                string i = unit.Value.supportPartners[0].ToString();
-                i = i + " ";
-                output1.Add(i);
                 output1.Add(unit.Value.name + "SupportData:");
-                
+
                 //string splitTestString = "SupportData(";
                 //splitTestString += unit.Value.numPartners.ToString();
                 //output1.Add(splitTestString);
-                
+
+                for (int i = 0; i < 7; i++) { if (unit.Value.supportPartners[i] == null) unit.Value.supportPartners[i] = "0"; }
+
                 output1.Add("SupportData(" +
                                     unit.Value.supportPartners[0] + "," +
                                     unit.Value.supportPartners[1] + "," +
@@ -201,7 +200,10 @@ namespace Supports2EA
             foreach (KeyValuePair<string, Character> unit in dict)
             {
                 for (int k = 0; k < 7; k++) {
-                    if (!((pairs.Contains(new CharacterPairs(unit.Value.name, unit.Value.supportPartners[k]))) || (pairs.Contains(new CharacterPairs(unit.Value.supportPartners[k], unit.Value.name)))))
+                    if (   (!pairs.Contains(new CharacterPairs(unit.Value.name, unit.Value.supportPartners[k]))) 
+                        || (!pairs.Contains(new CharacterPairs(unit.Value.supportPartners[k], unit.Value.name))) 
+                        ||  unit.Value.supportPartners[k] != "0"
+                        )
                     {
                         output2.Add("SupportText(" +
                                 unit.Value.name + "," +
@@ -217,7 +219,7 @@ namespace Supports2EA
             string footer = "SHORT 0xFFFF 0 0 0 0 0 0 0";
 
             if (File.Exists(filepath)) File.Delete(filepath);
-            File.OpenWrite(filepath);
+            File.OpenWrite(filepath).Close();
 
 
             string[] outputString = new string[5];
