@@ -99,6 +99,7 @@ namespace Supports2EA
                 if (line != "") { 
                     string trimmedLine = line.Trim();
                     trimmedLine = line.Replace(" ", "");
+                    trimmedLine = trimmedLine.Replace("\t", "");
 
                     string char1 = trimmedLine.Substring(0, trimmedLine.IndexOf('+'));
                     trimmedLine = trimmedLine.Substring(trimmedLine.IndexOf('+') + 1);
@@ -113,7 +114,27 @@ namespace Supports2EA
                     dict.TryGetValue(char1, out partner1);
                     dict.TryGetValue(char2, out partner2);
 
+                    if (partner1 == null)
+                    {
+                        Console.WriteLine("ERROR: Nonexistent character referenced: " + char1);
+                        return;
+                    } 
+                    if (partner2 == null)
+                    {
+                        Console.WriteLine("ERROR: Nonexistent character referenced: " + char2);
+                        return;
+                    }
+                    for (int i=0; i < 7; i++)
+                    {
+                        if (partner1.name == partner2.supportPartners[i] || partner2.name == partner1.supportPartners[i])
+                        {
+                            Console.WriteLine("ERROR: Same support is defined multiple times: " + partner1.name + " + " + partner2.name);
+                            return;
+                        }   
+                    }
+
                     //insert values at next free index for each
+
                     partner1.supportPartners[partner1.numPartners] = char2.Trim();
                     partner1.initialValues[partner1.numPartners] = startValue;
                     partner1.growthRates[partner1.numPartners] = growthValue;
@@ -123,6 +144,7 @@ namespace Supports2EA
                     partner2.initialValues[partner2.numPartners] = startValue;
                     partner2.growthRates[partner2.numPartners] = growthValue;
                     partner2.numPartners++;
+
                 }
             }
         }
